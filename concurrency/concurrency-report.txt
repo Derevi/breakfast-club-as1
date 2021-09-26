@@ -1,0 +1,32 @@
+﻿Concurrency
+
+
+MVCC: Multiversion Concurrency Control
+The main concurrency architecture for postgres is called MVCC. MVCC use snapshots at specific times in order to handle its concurrency. This means that read and writes do not lock each other up, which allows for performance gains. Each time a transaction starts, it can refer to a snapshot of the current database.
+
+
+MVCC DIAGRAM
+
+
+With this concurrency control system, postgres allows you multiple different ways to finely tune what occur within the MVCC upon a read and write.
+
+
+STATE DIAGRAM EXAMPLE
+
+
+Isolation Levels
+Controls how concurrent reads and writes are processed
+
+
+Concurrent Read and Write Phenomenon
+When there are multiple concurrent transactions that can read and write there are a few phenomenon that can occur:
+Dirty read:
+Nonrepeatable read:
+Phantom Read:
+Serialization Anomaly
+
+
+3 distinct isolation levels:
+Read Uncommitted, Read Committed
+Repeatable Read
+Serializable
