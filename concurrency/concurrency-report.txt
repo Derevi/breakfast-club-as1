@@ -1,11 +1,78 @@
-﻿Concurrency
+﻿Concurrency Architecture
 
 
 MVCC: Multiversion Concurrency Control
-The main concurrency architecture for postgres is called MVCC. MVCC use snapshots at specific times in order to handle its concurrency. This means that read and writes do not lock each other up, which allows for performance gains. Each time a transaction starts, it can refer to a snapshot of the current database.
+The main concurrency architecture for postgres is called Multiversion Concurrency Control, herein referred to as MVCC. This architecture was first described in Naming and synchronization in a decentralized computer system. MVCC solved many of the issues of concurrent access to a database. 
 
 
-MVCC DIAGRAM
+Two-Phase Locking: An Older Solution
+To fully understand why is needed MVCC is, it must be compared to prior accepted solutions at the time for concurrency control. The most popular being two phase locking. Two phase locking. Functionally a lock is used to block access to data in concurrent systems. This lock was used in two ways, there were write-locks (Exclusive locks), in which any transaction that would write to an element in a database would obtain this lock, blocking all access to that element, such that other transactions read or writes could not occur. The other type of lock is a read-lock (shared lock), a transaction that would read an element in the data base would acquire this lock, and any other transactions that read the element would be able to access it, but all write transactions would be locked out. The main disadvantage of this solution is that in a concurrent database system, a large number of transactions can occur simultaneously and having transactions wait for lock access will cause delay and thus performance issues. 
+
+
+[LOCK DIAGRAM]
+
+
+MVCC: Snapshots
+MVCC seeks to solve this problem of performance caused by two-phase locking by forgoing locks altogether. Instead MVCC using something called a snapshot. A snapshot is the state of the database at a particular point in time. When any transaction is sent to the database it receives a time stamped snapshot of the database when it begins. This means that multiple concurrent transactions will see different versions of the database depending when the transaction began. This makes it so that at a particular time stamp stamp when the transaction began the data would be consistent. Each transaction would then have its own snapshot of the database. When a snapshot is associated with a transaction via MVCC, it is then possible to control how concurrent transactions take place.
+
+
+[SNAPSHOT DIAGRAM OVERALL]
+
+
+Concurrency Phenomena
+
+
+When concurrent transactions occur on the same element, several phenomenon can occur.
+
+
+Dirty read:
+        Occurs when one uncommitted transaction makes a write, to an element, and another transaction reads what it wrote before that transaction commits
+[DIAGRAM]
+
+
+Nonrepeatable read:
+        An initial transaction reads an element then at some point a separate transaction commits a write to that element. When the transaction preforms a read again, before it commits, it will get the newly update element from the other transaction’s commit
+[DIAGRAM]
+
+
+Phantom read:
+During an aggregate transaction, that reads multiple rows, another transaction commits an update that would alter the set members such that it changes the elements that agree with the predicate.
+[DIAGRAM]
+
+
+Serialization Anomaly:
+        The order of the successfully committed transactions results in different possibilities 
+[DIAGRAM]
+
+
+Postgres can control which phenomena can occur via setting an isolation level:
+Read committed:
+Serial:
+
+
+
+
+ACID Compliance
+
+
+
+
+Atomicity
+Consistency
+Isolation
+Durability
+
+
+Generally for concurrent architectures locks are required when writing data. A writer that obtains a lock will not allow other processes to access it. When a more complex system like a database, which can have a large number of transactions with reads and writes, traditional locks, will cause a back log of transactions, as each batch of transactions that need to write to some element are scheduled waiting for each other to release the lock, one by one. This leads to much slower performance in general. The MVCC architecture was meant to be more generalized, and its main selling point is that it does not require any locks. MVCC is centered on the concept of snapshots. Applied to a database, this meands that reads will never block writes and writes will never block reads.
+Its main advantage is that it 
+
+
+In concurrent systems there can be multiple simultaneous transactions containing reads and writes, many phenomena can occur when reading and writing to the same element.
+ use snapshots at specific times in order to handle its concurrency. This means that read and writes do not lock each other up, which allows for performance gains. Each time a transaction starts, it can refer to a snapshot of the current database.
+13.1. Introduction, pg 486
+
+
+MVCC DIAGRAM (draw.io)
 
 
 With this concurrency control system, postgres allows you multiple different ways to finely tune what occur within the MVCC upon a read and write.
@@ -18,12 +85,14 @@ Isolation Levels
 Controls how concurrent reads and writes are processed
 
 
+
+
 Concurrent Read and Write Phenomenon
 When there are multiple concurrent transactions that can read and write there are a few phenomenon that can occur:
-Dirty read:
-Nonrepeatable read:
-Phantom Read:
-Serialization Anomaly
+Dirty read: A transaction reads data written by a concurrent uncommitted transaction.
+Nonrepeatable read: A transaction re-reads data it has previously read and finds that data has been modified by another transaction.
+Phantom Read: A transaction re-executes a query returning a set of rows that satisfy a search condition and finds that the set of rows satisfying the condition has changed due to another recently-commited transaction.
+Serialization Anomaly: Ther 
 
 
 3 distinct isolation levels:
