@@ -1,0 +1,12 @@
+﻿Storage architecture
+
+
+Each instance of postgres can  manage a single database cluster. A database cluster is an entity which holds multiple separate databases. These databases adhere to some number of specified schemas, and hold the table with the tuples as specified by the client (the database administrator). The databases themselves, and their respective tables are not stored as is on the server machine (it does not exist as some one to one representation on disk like a csv or spread sheet, that is), they are logical objects, within postgres. Specialized data structures, algorithms and policies are used in order access the physical information which would render the raw data into a logical representation of the database.
+The raw data itself, as well as other configuration files are stored on the machine file system itself. Postgres refers to this directory as the ‘data directory’ or ‘PGDATA’.
+This overall view implies that there must exists some services in between these layers inorder to preform the actions on the database required by postgres. Firstly an existence of some database cluster service, is required in order to allow the postgres server to access these logical databases. Additionally, at a lower level there must be some data directory service, that renders access and changes committed to the logical databases to their actual raw data inside the data directory (PGDATA). The aforementioned database cluster service and data directory service, are not explicitly referred to by postgres, they are conceptual architectural components, used to show the storage architecture at a high level. The architecture was derived by taking the basic required high level components of postgres storage, abstracting out the details upon what happens internally when a database cluster is accessed, and representing them as some service that facilitates communication between these layers.
+  
+
+Figure ??The ‘Database Cluster Service’ and ‘Data Directory Service’ are conceptually derived components used clearly illustrated the storage architecture of postgres. There are not explicitly mentioned or implemented as named in postgres. These services act as the go between each layer. To further show more detail of the architecture, nested entities imply they are some entity that exist inside, another entity, to help illustrate hierarchical organization.
+
+
+..citation…. Postgres official doc section CH22, and CH69, ch.50
