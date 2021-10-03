@@ -10,5 +10,6 @@ citations neeed to be in IEEE format
 in the text use [#] to cite sources
 add to bibliography. if a new source is cited renumber and replace old citations
 bibme website is recommended to make sure you don't mess up the citations style
+use built in google doc styles
 
 When in doubt refer to this manual https://www.ieee.org/content/dam/ieee-org/ieee/web/org/conferences/style_references_manual.pdf
