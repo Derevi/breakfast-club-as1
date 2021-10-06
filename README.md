@@ -16,4 +16,7 @@ When in doubt refer to this manual https://www.ieee.org/content/dam/ieee-org/iee
 
 ----
 ### correction to style guidline
-Use 12 point font, not 11.
+Use 12 point font, not 11
+Change from Ariel to Times new Roman to save some space.
+Main title 24 point font
+headings 15 point font
