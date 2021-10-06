@@ -13,3 +13,7 @@ bibme website is recommended to make sure you don't mess up the citations style
 use built in google doc styles  
 
 When in doubt refer to this manual https://www.ieee.org/content/dam/ieee-org/ieee/web/org/conferences/style_references_manual.pdf  
+
+----
+### correction to style guidline
+Use 12 point font, not 11.
